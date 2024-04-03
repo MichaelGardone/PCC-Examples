@@ -1,3 +1,4 @@
+using PCC.ContentRepresentation.Sample;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,8 +62,6 @@ public class MapManager : MonoBehaviour
         fileLoad = fileLoadPathCrafted + fileNameCrafted;
         fileWritePath = Application.persistentDataPath + "/";
         fileWriteCrafted = fileWritePath + fileNameCrafted;
-
-        
     }
 
 
@@ -72,8 +71,8 @@ public class MapManager : MonoBehaviour
         //LoadCraftedMapsTextIntoJSON();
         LoadCraftedMapsFromJSON();
 
-        if (currentMapIndex < 0 || currentMapIndex > _maps.Count-1)
-            currentMapIndex = UnityEngine.Random.Range(0, _maps.Count-1);
+        if (currentMapIndex < 0 || currentMapIndex > _maps.Count - 1)
+            currentMapIndex = UnityEngine.Random.Range(0, _maps.Count - 1);
 
         pcg = new PCG(_maps[0]);
 
@@ -81,19 +80,23 @@ public class MapManager : MonoBehaviour
         //pcg = new PCG(_maps[0].mapStringRaw);
         //pcg.SetSampleMap(_maps[0].mapStringRaw);
 
-
-
-        DrawCurrentMap();
+        //DrawCurrentMap();
         //SetUpMapFromString(_maps[currentMapIndex].mapStringRaw);
     }
 
-    public void GetNextLevel()
+    public void GetNextLevel(Sample sample = null)
     {
         bool pcgMapWorked = false;
-        if (isLoadingNewMapsViaPCG)
-        {
 
+        if (isLoadingNewMapsViaPCG && sample == null)
+        {
             pcgMapWorked = LoadAndDrawPCGMap(pcg.GenerateMap( pcg.CreateRandomizedMapFeatures() ));
+            if (pcgMapWorked)
+                return;
+        }
+        else if(isLoadingNewMapsViaPCG && sample != null)
+        {
+            pcgMapWorked = LoadAndDrawPCGMap(pcg.GenerateMap(pcg.CreateMapFromPCCSample(sample)));
             if (pcgMapWorked)
                 return;
         }
@@ -103,7 +106,6 @@ public class MapManager : MonoBehaviour
         currentMapIndex %= _maps.Count;
 
         DrawCurrentMap();
-
     }
 
     private void LoadCraftedMapsFromJSON()

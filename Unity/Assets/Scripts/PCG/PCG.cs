@@ -4,6 +4,7 @@ using System.Linq;
 //using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PCC.ContentRepresentation.Sample;
 
 
 // TODO: I don't believe MonoBehavior is requisite for this class.
@@ -254,6 +255,25 @@ public class PCG
         returnMapFeatures.rangePower2Power = new Vector2(UnityEngine.Random.Range(1.0f, 1.0f), UnityEngine.Random.Range(1.0f, 1.0f));
 
         //returnMapFeatures.isSymetric = true;
+        returnMapFeatures.isSymetric = UnityEngine.Random.Range(0.0f, 1.0f) <= 0.5f;
+
+        return returnMapFeatures;
+    }
+
+    public MapFeatures CreateMapFromPCCSample(Sample sample)
+    {
+        MapFeatures returnMapFeatures = new MapFeatures();
+
+        // tracked
+        returnMapFeatures.totPelletDensity = sample.GetSampleValue("pellet_density").Item2.floatVal;
+
+        // tracked
+        returnMapFeatures.powerPelletDensity = sample.GetSampleValue("power_pellets").Item2.floatVal;
+
+        // Not tracked -- ignore
+        returnMapFeatures.rangePower2Power = new Vector2(UnityEngine.Random.Range(1.0f, 1.0f), UnityEngine.Random.Range(1.0f, 1.0f));
+
+        // Not tracked -- ignore
         returnMapFeatures.isSymetric = UnityEngine.Random.Range(0.0f, 1.0f) <= 0.5f;
 
         return returnMapFeatures;

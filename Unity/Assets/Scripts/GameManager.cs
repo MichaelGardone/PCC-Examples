@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using PCC.CurationMethod;
+using UnityEditor.PackageManager.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,8 +21,11 @@ public class GameManager : MonoBehaviour
     public GameObject ask4Pref_UI;
 
     public MapManager mapManager;
-    //TODO... I wasn't sure where this would want to hang out. Put here, but can be moved. :)
+    
+    // Player Preference
     private PlayerPrefs playerPrefs = new PlayerPrefs();
+    private PCC.ContentRepresentation.Sample.Sample m_sample;
+    // Player Preference
 
     public KeyCode keyCode_Love = KeyCode.G;
     public KeyCode keyCode_Hate = KeyCode.B;
@@ -40,18 +44,15 @@ public class GameManager : MonoBehaviour
 
     public static int Level = 0;
 
-
-
-
     private void Awake()
     {
         // Load your pre-trained data here, if desired
     }
 
-
     private void Start()
     {
         //NewGame();
+
         ask4Pref_UI.SetActive(false);
         gameOverText.enabled = false;
         for (int i = 0; i < this.ghosts.Length; i++)
@@ -103,7 +104,16 @@ public class GameManager : MonoBehaviour
     // Could add a function to draw the map! :D
     private void NewLevel()
     {
-        //@Gardone: inject PCG here
+        if (playerPrefs.Lessons < 5)
+        {
+            m_sample = playerPrefs.GenerateASample(SampleGenerationMethod.RANDOM);
+        }
+        else
+        {
+            m_sample = playerPrefs.GenerateASample(SampleGenerationMethod.RANDOM_FROM_KNOWNS);
+        }
+
+        mapManager.GetNextLevel(m_sample);
 
         SetScoreUI(0);
         SetLivesUI(maxLives);
@@ -220,36 +230,38 @@ public class GameManager : MonoBehaviour
     {
         ask4Pref_UI.SetActive(true);
 
-
         bool isPrefSet = false;
 
         float newPlayerPrefValue = 0;
 
         while (!isPrefSet)
         {
+            Debug.Log("in");
+
             // Using if, else if on purpose --- can't make more than one selection!
             if (Input.GetKeyDown(keyCode_Love))
             {
+                Debug.Log("like");
                 newPlayerPrefValue = Ask4PrefValue.GetPrefValueFromKey(KeyCode.Alpha1);
                 isPrefSet = true;
             }
             else if (Input.GetKeyDown(keyCode_Hate))
             {
+                Debug.Log("dislike");
                 newPlayerPrefValue = Ask4PrefValue.GetPrefValueFromKey(KeyCode.Alpha6);
                 isPrefSet = true;
-            }
-
-            if (isPrefSet)
-            {
-                playerPrefs.AssignPlayerPrefs(newPlayerPrefValue);
             }
 
             yield return null;
         }
 
+        Debug.Log("out");
+
+        playerPrefs.AssignPlayerPrefs(m_sample, newPlayerPrefValue);
+        
         ask4Pref_UI.SetActive(false);
         gameOverText.enabled = false;
-        mapManager.GetNextLevel();
+        mapManager.GetNextLevel(m_sample);
         WaitForInput2StartNewLevel();
     }
 
@@ -266,9 +278,7 @@ public class GameManager : MonoBehaviour
         // In case eat another power pellet before the first timer is up.
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
-
     }
-
 
     private bool HasRemainingPellets()
     {
@@ -278,7 +288,6 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
-
 
     private void ResetGhostMultiplier()
     {
