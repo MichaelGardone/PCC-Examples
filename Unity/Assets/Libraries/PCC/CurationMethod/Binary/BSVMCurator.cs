@@ -6,24 +6,20 @@ using PCC.Utility;
 using PCC.Utility.Memory;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace PCC.CurationMethod.Binary
 {
     public struct SVMCuratorProperties
     {
-        public SVMCuratorProperties(int DislikedMemSize = 15, int LikedMemSize = 15, int BagSize = 5, int SigfigCount = 5,
-            int RetainModelOnSampleCount = 0, int MaxAttempts = 5)
+        public SVMCuratorProperties(int bagSize = 5)
         {
-            this.DislikedMemSize = DislikedMemSize;
-            this.LikedMemSize = LikedMemSize;
-            this.BagSize = BagSize;
-            this.SigfigCount = SigfigCount;
-            this.RetrainModelOnSampleCount = RetainModelOnSampleCount;
-            this.MaxAttempts = MaxAttempts;
-
-            // Can't set this
+            DislikedMemSize = 15;
+            LikedMemSize = 15;
+            BagSize = bagSize;
+            SigfigCount = 3;
+            RetrainModelOnSampleCount = 0;
             UnknownRange = new Tuple<float, float>(0.4f, 0.55f);
+            MaxAttempts = 5;
         }
 
         public int DislikedMemSize;
@@ -106,6 +102,7 @@ namespace PCC.CurationMethod.Binary
             }
         }
 
+#if !UNITY_EXPORT
         protected List<Feature> features;
         public BSVMCurator(List<Feature> features, SVMParameter svmParameters, SVMCuratorProperties curProperties)
         {
@@ -119,6 +116,21 @@ namespace PCC.CurationMethod.Binary
             likedSamples = new RingBuffer<SVMNode[]>(curProperties.LikedMemSize);
             dislikedSamples = new RingBuffer<SVMNode[]>(curProperties.DislikedMemSize);
         }
+#else
+        protected Feature[] features;
+        public BSVMCurator(Feature[] features, SVMParameter svmParameters, SVMCuratorProperties curProperties)
+        {
+            minSamples = features.Length;
+            this.features = features;
+
+            properties = curProperties;
+            parameter = svmParameters;
+
+            models = new RingBuffer<ModelNComponents>(curProperties.BagSize);
+            likedSamples = new RingBuffer<SVMNode[]>(curProperties.LikedMemSize);
+            dislikedSamples = new RingBuffer<SVMNode[]>(curProperties.DislikedMemSize);
+        }
+#endif
 
         public void ClearMemory()
         {
@@ -278,11 +290,6 @@ namespace PCC.CurationMethod.Binary
                 if (models.Get(i).model.Predict(nodes) == 1)
                     rate -= modelContrib;
             }
-            //foreach (ModelNComponents model in models)
-            //{
-            //    if (model.model.Predict(nodes) == 1)
-            //        rate -= modelContrib;
-            //}
 
             return rate;
         }

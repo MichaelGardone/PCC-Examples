@@ -277,33 +277,6 @@ namespace PCC.CurationMethod.Binary
                         }
                     }
                 }
-                //foreach (Tuple<HistoricSample, int> sample in memoryBuffer)
-                //{
-                //    // Skip if we aren't looking at the right sample
-                //    if ((whichHistory == 1 && sample.Item2 == -1) || (whichHistory == -1 && sample.Item2 == 1))
-                //        continue;
-
-                //    foreach(Feature feat in features)
-                //    {
-                //        Tuple<SampleValue, SampleValue> vals = sample.Item1[feat.Name]!;
-
-                //        switch (feat.FeatureType)
-                //        {
-                //            case FeatureType.INT:
-                //                if (knownIntRanges.ContainsKey(feat.Name) == false)
-                //                    knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                //                knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                //                break;
-                //            case FeatureType.FLOAT:
-                //                if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                //                    knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                //                knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                //                break;
-                //        }
-                //    }
-                //}
             }
             else
             {
@@ -312,7 +285,7 @@ namespace PCC.CurationMethod.Binary
                     for (int i = 0; i < likedBuffer!.Count(); i++)
                     {
                         HistoricSample sample = likedBuffer!.Get(i);
-
+                        
                         foreach (Feature feat in features)
                         {
                             Tuple<SampleValue, SampleValue> vals = sample[feat.Name]!;
@@ -334,30 +307,6 @@ namespace PCC.CurationMethod.Binary
                             }
                         }
                     }
-
-                    //foreach (HistoricSample sample in likedBuffer!)
-                    //{
-                    //    foreach (Feature feat in features)
-                    //    {
-                    //        Tuple<SampleValue, SampleValue> vals = sample[feat.Name]!;
-
-                    //        switch (feat.FeatureType)
-                    //        {
-                    //            case FeatureType.INT:
-                    //                if (knownIntRanges.ContainsKey(feat.Name) == false)
-                    //                    knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                    //                knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                    //                break;
-                    //            case FeatureType.FLOAT:
-                    //                if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                    //                    knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                    //                knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                    //                break;
-                    //        }
-                    //    }
-                    //}
                 }
 
                 if(whichHistory == 0 || whichHistory == -1)
@@ -387,30 +336,6 @@ namespace PCC.CurationMethod.Binary
                             }
                         }
                     }
-
-                    //foreach (HistoricSample sample in dislikedBuffer!)
-                    //{
-                    //    foreach (Feature feat in features)
-                    //    {
-                    //        Tuple<SampleValue, SampleValue> vals = sample[feat.Name]!;
-
-                    //        switch (feat.FeatureType)
-                    //        {
-                    //            case FeatureType.INT:
-                    //                if (knownIntRanges.ContainsKey(feat.Name) == false)
-                    //                    knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                    //                knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                    //                break;
-                    //            case FeatureType.FLOAT:
-                    //                if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                    //                    knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                    //                knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                    //                break;
-                    //        }
-                    //    }
-                    //}
                 }
             }
 

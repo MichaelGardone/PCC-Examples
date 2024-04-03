@@ -1,21 +1,15 @@
 ﻿using PCC.Utility.Range;
-//using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace PCC.ContentRepresentation.Features
 {
-    //[StructLayout(LayoutKind.Explicit)]
-    //public struct FeatureRange
-    //{
-    //    [FieldOffset(0)]
-    //    public IntRange intRange;
-
-    //    [FieldOffset(0)]
-    //    public FloatRange floatRange;
-    //}
-
+    [StructLayout(LayoutKind.Explicit)]
     public struct FeatureRange
     {
+        [FieldOffset(0)]
         public IntRange intRange;
+
+        [FieldOffset(0)]
         public FloatRange floatRange;
     }
 
